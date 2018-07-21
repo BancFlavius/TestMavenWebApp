@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet("/sal")
+@WebServlet("/servlet")
 public class MyServlet extends HttpServlet {
 
     @Override
@@ -33,13 +33,16 @@ public class MyServlet extends HttpServlet {
                 System.out.println("reading from database");
                 String[] sa = ClasaDeDb.read();
                 PrintWriter out = resp.getWriter();
+                boolean notNull = false;
                 for(int i=0;i<sa.length;i++){
                     if(sa[i]!=null) {
+                        notNull = true;
                         out.print("Nume: " + sa[i]);
                         i++;
                         out.println("   Telefon: " + sa[i]);
                     }
                 }
+                if(!notNull)out.println("Agenda este goala.");
             }
         } catch (IOException e) {
             e.printStackTrace();
