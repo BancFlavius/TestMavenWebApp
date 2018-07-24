@@ -1,5 +1,7 @@
 import java.io.PrintWriter;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClasaDeDb {
     static void insert(String nume, String telefon){
@@ -50,8 +52,8 @@ public class ClasaDeDb {
         }
     }
 
-    static String[] read() {
-        String[] sa = new String[1000];
+    static List<Item> read() {
+        List<Item> lista = new ArrayList<>();
         try {
             Class.forName("org.postgresql.Driver");
 
@@ -64,14 +66,13 @@ public class ClasaDeDb {
             PreparedStatement pSt = conn.prepareStatement("SELECT * FROM agenda");
             ResultSet rs = pSt.executeQuery();
 
-            int temp = 0;
             while (rs.next()) {
-                String nume = rs.getString("nume").trim();
-                sa[temp] = nume;
-                temp++;
-                String telefon = rs.getString("telefon").trim();
-                sa[temp] = telefon;
-                temp++;
+                String nume="0";
+                String telefon="0";
+                Item i = new Item(nume,telefon);
+                 i.setName(rs.getString("nume").trim());
+                 i.setPhone(rs.getString("telefon").trim());
+                 lista.add(i);
             }
 
             rs.close();
@@ -82,6 +83,6 @@ public class ClasaDeDb {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return sa;
+        return lista;
     }
 }

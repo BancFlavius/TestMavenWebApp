@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 @WebServlet("/servlet")
 public class MyServlet extends HttpServlet {
@@ -17,30 +18,36 @@ public class MyServlet extends HttpServlet {
             String action = req.getParameter("action");
 
             if(action!=null && action.equals("C")) {
-                System.out.println("creating new user");
-                String nume = req.getParameter("nume");
-                String telefon  = req.getParameter("telefon");
-                ClasaDeDb.insert(nume, telefon);
-                PrintWriter out = resp.getWriter();
-                out.println("New contact added.");
+                if(req.getParameter("nume")==null){
+                    PrintWriter out = resp.getWriter();
+                    out.println("Please add your name and phone number.");
+                } else {
+                    System.out.println("creating new user");
+                    String nume = req.getParameter("nume");
+                    String telefon = req.getParameter("telefon");
+                    ClasaDeDb.insert(nume, telefon);
+                    PrintWriter out = resp.getWriter();
+                    out.println("New contact added.");
+                }
             } else if(action!=null && action.equals("D")){
-                System.out.println("deleting from database");
-                String nume = req.getParameter("nume");
-                ClasaDeDb.delete(nume);
-                PrintWriter out = resp.getWriter();
-                out.println("Contact deleted.");
+                if(req.getParameter("nume")==null){
+                    PrintWriter out = resp.getWriter();
+                    out.println("Please enter a name you would like to delete");
+                } else {
+                    System.out.println("deleting from database");
+                    String nume = req.getParameter("nume");
+                    ClasaDeDb.delete(nume);
+                    PrintWriter out = resp.getWriter();
+                    out.println("Contact deleted.");
+                }
             } else if(action!=null && action.equals("R")){
                 System.out.println("reading from database");
-                String[] sa = ClasaDeDb.read();
+                List<Item> lista = ClasaDeDb.read();
                 PrintWriter out = resp.getWriter();
                 boolean notNull = false;
-                for(int i=0;i<sa.length;i++){
-                    if(sa[i]!=null) {
-                        notNull = true;
-                        out.print("Nume: " + sa[i]);
-                        i++;
-                        out.println("   Telefon: " + sa[i]);
-                    }
+                for(Item i : lista){
+                    out.println(i.toString());
+                    notNull=true;
                 }
                 if(!notNull)out.println("Agenda este goala.");
             }
